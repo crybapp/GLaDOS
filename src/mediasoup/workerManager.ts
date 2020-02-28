@@ -68,27 +68,32 @@ export default class WorkerManager {
         });
     }
 
-    private createNewWorker = () => {
-        createWorker(this.workerOptions).then((worker) => {
-            const newWorker: WorkerInfo = {
-                mediasoupWorker: worker,
-                cpuInfo: {
-                    lastCPUTimestamp: 0,
-                    last5: 0,
-                    last10: 0, 
-                    last15: 0,
-                    avg15: 0,
-                    avgLifetime: 0
-                },
-                createdAt: Date.now()
-            };
+    private createNewWorker = () => new Promise<WorkerInfo>(async (resolve) => {
+        let newWorker = await createWorker(this.workerOptions)
+    
+        const newWorkerInfo: WorkerInfo = {
+            mediasoupWorker: newWorker,
+            cpuInfo: {
+                lastCPUTimestamp: 0,
+                last5: 0,
+                last10: 0, 
+                last15: 0,
+                avg15: 0,
+                avgLifetime: 0
+            },
+            createdAt: Date.now()
+        };
 
-            this.mediasoupWorkerArr.push(newWorker);
-        });
-    }
+        this.mediasoupWorkerArr.push(newWorkerInfo);
+        resolve(newWorkerInfo);
+    });
 
-    private getReccomendedWorker = () => new Promise<WorkerInfo>((resolve) => {
-        const reccomendedWorker = this.mediasoupWorkerArr.reduce((previous, current): WorkerInfo => {
+    public getReccomendedWorker = () => new Promise<WorkerInfo>(async (resolve) => {
+        while(this.mediasoupWorkerArr.length === 0) {
+            await setTimeout(null, 100)
+        }
+
+        let reccomendedWorker = this.mediasoupWorkerArr.reduce((previous, current): WorkerInfo => {
             if(current.cpuInfo.avg15 < previous.cpuInfo.avg15 - 15) {
                 return current;
             } else {
@@ -96,6 +101,10 @@ export default class WorkerManager {
             }
         });
 
+        if(reccomendedWorker.cpuInfo.avg15 > 200) {
+            reccomendedWorker = await this.createNewWorker();
+        }
+
         resolve(reccomendedWorker);
-    })
+    });
 }
