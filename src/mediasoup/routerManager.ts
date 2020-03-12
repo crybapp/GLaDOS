@@ -19,6 +19,16 @@ export default class RouterManager {
         const recWorker = await this.workerManager.getReccomendedWorker();
         const router = await recWorker.mediasoupWorker.createRouter();
         this.routerMap.set(roomId, router);
+
+        this.createNewRTPTransport(router);
+    });
+
+    private createNewRTPTransport = (router: Router) => new Promise(async (resolve, reject) => {
+        router.createPlainRtpTransport({
+            listenIp: process.env.MEDIASOUP_LISTEN_ADDR,
+            comedia: true
+        }); 
+
     });
 
     public getRouterByRoomId = (roomId: string): Router => {

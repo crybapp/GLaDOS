@@ -1,0 +1,16 @@
+            ██████████████████████            
+            ██████████████████████            
+        ██████████████████████████████        
+        ██████████████████████████████           Welcome to Cryb GLaDOS!
+    ██████████████████████████████████████       
+    ██████████████████████████████████████       This server runs on port :PORT and requires the following:
+████████████                      ████████████
+████████████                      ████████████   * MongoDB (:27017)
+        ████                      ████           * Redis (:6379)
+        ████     ████████         ████         
+        ████     ████████         ████        
+        ████     ████████         ████           Have any issues? Open them at https://github.com/crybapp/GLaDOS/issues
+        ████     ████████         ████           Working on new features? Merge them in at https://github.com/crybapp/GLaDOS/merge_requests
+        ████     ████████         ████           
+        ██████████████████████████████
+        ██████████████████████████████
